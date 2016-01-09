@@ -15,6 +15,3 @@
 * `<button disabled={!isAvailable}></button>` for adding/removing attribute
 * `<button onClick={this.props.removeFish.bind(null, key)}>Remove Fish</button>` if props method is passed down. Weird.
 * two way data binding: `<input type="text" valueLink={linkState('fishes.'+ key +'.name')}/>`; https://facebook.github.io/react/docs/two-way-binding-helpers.html deeply nested: https://github.com/tungd/react-catalyst
-
-
-host static site on https://getforge.com/ following http://blog.beach.io/blog/the-future-of-web-apps-hammer-reactjs-parse-forge

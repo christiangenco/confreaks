@@ -11,6 +11,7 @@ var $ = require('jquery');
 var Mousetrap = require('mousetrap')
 var Loader = require('react-loader');
 
+// http://getbootstrap.com/components/#pagination
 var Pagination = require('react-bootstrap').Pagination
 
 var App = React.createClass({
@@ -18,7 +19,7 @@ var App = React.createClass({
   getInitialState: function(){
     return {
       videos: [],
-      pageSize: 2,
+      pageSize: 10,
       page: 1,
       pageCount: 0
     };
@@ -26,12 +27,12 @@ var App = React.createClass({
   componentWillMount: function(){
     var ref = new Firebase("https://confreaks.firebaseio.com/videos");
     // this.firebaseCursor = new Firebase.util.Scroll(ref, 'views');
-    this.firebaseCursor = new Firebase.util.Paginate(ref, 'views', {
+    this.firebaseCursor = new Firebase.util.Paginate(ref, 'negative_views', {
       pageSize: this.state.pageSize
     });
 
     this.firebaseCursor.on("child_added", function(dataSnapshot) {
-      console.dir(dataSnapshot);
+      // console.dir(dataSnapshot);
       this.state.videos.push(dataSnapshot.val());
       this.setState({
         videos: this.state.videos
@@ -93,7 +94,7 @@ var App = React.createClass({
     this.gotoPage(selectedEvent.eventKey);
   },
   paginator: function(){
-    return <Pagination onSelect={this.handlePaginationSelect} activePage={this.state.page} items={this.state.pageCount} maxButtons={10} first={true} last={true} next={true} prev={true} />;
+    return <Pagination onSelect={this.handlePaginationSelect} activePage={this.state.page} items={this.state.pageCount} maxButtons={10} first={true} last={false} next={true} prev={true} />;
   },
   render: function(){
     return (
