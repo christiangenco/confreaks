@@ -97,7 +97,7 @@ var App = React.createClass({
     return (
       <div className="">
         {this.paginator()}
-        <Loader loaded={this.state.videos.length}>
+        <Loader loaded={!!this.state.videos.length}>
           {this.state.videos.map(function(video){
             return <Video key={video.id} {...video} />
           })}
