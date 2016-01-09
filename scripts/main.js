@@ -6,6 +6,10 @@ var ReactDOM = require('react-dom');
 // var Route = ReactRouter.Route;
 // var Navigation = ReactRouter.Navigation;
 // var createBrowserHistory = require('history/lib/createBrowserHistory');
+
+var Parse = require('parse');
+Parse.initialize("OJhdiH9cxLCnKdVCwv6h4xNKzNmnUWlU9Fe4D8iH", "OJONxdXl2il4unpr9rul1F2VEfKvOk3ZXJ1jhWdg");
+var ParseReact = require('parse-react');
 var h = require('./helpers');
 var moment = require('moment');
 var $ = require('jquery');
@@ -14,6 +18,7 @@ var $ = require('jquery');
 
 var App = React.createClass({
   // mixins: [Catalyst.LinkedStateMixin],
+  mixins: [ParseReact.Mixin],
   getInitialState: function(){
     return {
       videos: [],
@@ -21,19 +26,18 @@ var App = React.createClass({
       pageSize: 1
     };
   },
-  componentDidMount: function() {
-    var url = "http://confreaks.tv/api/v1/videos.json?limit=" + this.props.limit;
-    // $.get(this.props.source, function(result) {
-    //   var lastGist = result[0];
-    //   if (this.isMounted()) {
-    //     this.setState({
-    //       username: lastGist.owner.login,
-    //       lastGistUrl: lastGist.html_url
-    //     });
-    //   }
-    // }.bind(this));
-    this.loadSampleVideos()
+  observe: function(){
+    return {
+      videos: (new Parse.Query('video')).ascending('createdAt')
+    }
   },
+  handleActiveChange: function(doc, index){
+    console.log("handling active change");
+  },
+
+  // componentDidMount: function() {
+  //   this.loadSampleVideos()
+  // },
   loadSampleVideos: function(){
     console.log("loading samples");
     this.setState({
@@ -43,7 +47,7 @@ var App = React.createClass({
   render: function(){
     return (
       <div className="">
-        {this.state.videos.map(function(video){
+        {this.data.videos.map(function(video){
           return <Video key={video.id} {...video} />
         })}
       </div>
@@ -53,6 +57,7 @@ var App = React.createClass({
 
 var Video = React.createClass({
   author: function(){
+    if(!this.props.presenters) return "";
     return this.props.presenters.map(function(presenter){
       return presenter.first_name + " " + presenter.last_name;
     });
@@ -65,7 +70,7 @@ var Video = React.createClass({
       <div className="media">
         <div className="media-left">
           <a href={"http://confreaks.tv/videos/" + this.props.slug} target="_blank">
-            <img className="media-object img-thumbnail" src={this.props.image} alt="{this.props.title} at {this.props.event}" width="200px" />
+            <img className="media-object img-thumbnail" src={this.props.image} alt={this.props.title} width="200px" />
           </a>
         </div>
         <div className="media-body">
