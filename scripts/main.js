@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 
 var Firebase = require('firebase');
 window.ReactFire = require('reactfire');
+var fbutil = require('firebase-util');
 
 var h = require('./helpers');
 var moment = require('moment');
@@ -13,22 +14,24 @@ var App = React.createClass({
   getInitialState: function(){
     return {
       videos: [],
-      limit: 2,
-      pageSize: 1
+      pageSize: 1,
     };
   },
   componentWillMount: function(){
     var ref = new Firebase("https://confreaks.firebaseio.com/videos");
-    // this.bindAsArray(ref, "videos");
+    this.firebaseCursor = new Firebase.util.Scroll(ref, 'views');
 
-    ref.on("child_added", function(dataSnapshot) {
+    this.firebaseCursor.on("child_added", function(dataSnapshot) {
       console.dir(dataSnapshot);
       this.state.videos.push(dataSnapshot.val());
       this.setState({
         videos: this.state.videos
       });
     }.bind(this));
-    // this.unbind("videos")
+    this.firebaseCursor.scroll.next(this.state.pageSize);
+  },
+  loadMore: function(){
+    this.firebaseCursor.scroll.next(this.state.pageSize);
   },
   loadSampleVideos: function(){
     console.log("loading samples");
