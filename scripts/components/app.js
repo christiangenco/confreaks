@@ -101,8 +101,8 @@ var App = React.createClass({
           {this.state.videos.map(function(video){
             return <Video key={video.id} {...video} />
           })}
+          {this.paginator()}
         </Loader>
-        {this.paginator()}
       </div>
     )
   }
