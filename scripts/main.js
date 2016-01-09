@@ -8,6 +8,8 @@ var fbutil = require('firebase-util');
 var h = require('./helpers');
 var moment = require('moment');
 var $ = require('jquery');
+var Mousetrap = require('mousetrap')
+var Loader = require('react-loader');
 
 var Pagination = require('react-bootstrap').Pagination
 
@@ -59,6 +61,10 @@ var App = React.createClass({
       }
     }.bind(this));
   },
+  componentDidMount: function(){
+    Mousetrap.bind('right', function() { this.nextPage() }.bind(this));
+    Mousetrap.bind('left', function() { this.prevPage() }.bind(this));
+  },
   nextPage: function(){
     this.setState({
       videos: []
@@ -86,13 +92,19 @@ var App = React.createClass({
   handlePaginationSelect: function(event, selectedEvent){
     this.gotoPage(selectedEvent.eventKey);
   },
+  paginator: function(){
+    return <Pagination onSelect={this.handlePaginationSelect} activePage={this.state.page} items={this.state.pageCount} maxButtons={10} first={true} last={true} next={true} prev={true} />;
+  },
   render: function(){
     return (
       <div className="">
-        {this.state.videos.map(function(video){
-          return <Video key={video.id} {...video} />
-        })}
-        <Pagination onSelect={this.handlePaginationSelect} activePage={this.state.page} items={this.state.pageCount} maxButtons={10} first={true} last={true} next={true} prev={true} />
+        {this.paginator()}
+        <Loader loaded={this.state.videos.length}>
+          {this.state.videos.map(function(video){
+            return <Video key={video.id} {...video} />
+          })}
+        </Loader>
+        {this.paginator()}
       </div>
     )
   }
