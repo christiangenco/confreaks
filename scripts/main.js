@@ -7,9 +7,12 @@ var ReactDOM = require('react-dom');
 // var Navigation = ReactRouter.Navigation;
 // var createBrowserHistory = require('history/lib/createBrowserHistory');
 
-var Parse = require('parse');
-Parse.initialize("OJhdiH9cxLCnKdVCwv6h4xNKzNmnUWlU9Fe4D8iH", "OJONxdXl2il4unpr9rul1F2VEfKvOk3ZXJ1jhWdg");
-var ParseReact = require('parse-react');
+// var Parse = require('parse');
+// Parse.initialize("OJhdiH9cxLCnKdVCwv6h4xNKzNmnUWlU9Fe4D8iH", "OJONxdXl2il4unpr9rul1F2VEfKvOk3ZXJ1jhWdg");
+// var ParseReact = require('parse-react');
+var Rebase = require('re-base');
+var base = Rebase.createClass('https://confreaks.firebaseio.com');
+
 var h = require('./helpers');
 var moment = require('moment');
 var $ = require('jquery');
@@ -18,7 +21,8 @@ var $ = require('jquery');
 
 var App = React.createClass({
   // mixins: [Catalyst.LinkedStateMixin],
-  mixins: [ParseReact.Mixin],
+  // mixins: [ParseReact.Mixin],
+  // mixins: [ParseReact.Mixin],
   getInitialState: function(){
     return {
       videos: [],
@@ -26,18 +30,26 @@ var App = React.createClass({
       pageSize: 1
     };
   },
-  observe: function(){
-    return {
-      videos: (new Parse.Query('video')).ascending('createdAt')
-    }
-  },
-  handleActiveChange: function(doc, index){
-    console.log("handling active change");
-  },
-
-  // componentDidMount: function() {
-  //   this.loadSampleVideos()
+  // observe: function(){
+  //   return {
+  //     videos: (new Parse.Query('video')).ascending('createdAt')
+  //   }
   // },
+  // handleActiveChange: function(doc, index){
+  //   console.log("handling active change");
+  // },
+
+  componentDidMount: function() {
+    // use bindToState for live updating,
+    // or fetch for single loading,
+    // or syncState for two-way binding
+    base.syncState("/videos", {
+      context: this,
+      state: 'videos',
+      asArray: true,
+    });
+    // this.loadSampleVideos()
+  },
   loadSampleVideos: function(){
     console.log("loading samples");
     this.setState({
@@ -47,7 +59,7 @@ var App = React.createClass({
   render: function(){
     return (
       <div className="">
-        {this.data.videos.map(function(video){
+        {this.state.videos.map(function(video){
           return <Video key={video.id} {...video} />
         })}
       </div>
