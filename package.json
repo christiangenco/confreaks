@@ -1,5 +1,5 @@
 {
-  "name": "catch-of-the-day",
+  "name": "confreaks",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -36,6 +36,7 @@
     "react-dom": "0.14.0",
     "react-mixin": "3.0.0",
     "react-router": "1.0.0-rc3",
+    "reactfire": "^0.5.1",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",
     "watchify": "3.4.0"

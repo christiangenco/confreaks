@@ -1,28 +1,15 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-// var ReactRouter = require('react-router');
-// var Router = ReactRouter.Router;
-// var History = ReactRouter.History;
-// var Route = ReactRouter.Route;
-// var Navigation = ReactRouter.Navigation;
-// var createBrowserHistory = require('history/lib/createBrowserHistory');
 
-// var Parse = require('parse');
-// Parse.initialize("OJhdiH9cxLCnKdVCwv6h4xNKzNmnUWlU9Fe4D8iH", "OJONxdXl2il4unpr9rul1F2VEfKvOk3ZXJ1jhWdg");
-// var ParseReact = require('parse-react');
-var Rebase = require('re-base');
-var base = Rebase.createClass('https://confreaks.firebaseio.com');
+var Firebase = require('firebase');
+window.ReactFire = require('reactfire');
 
 var h = require('./helpers');
 var moment = require('moment');
 var $ = require('jquery');
 
-// var Catalyst = require('react-catalyst');
-
 var App = React.createClass({
-  // mixins: [Catalyst.LinkedStateMixin],
-  // mixins: [ParseReact.Mixin],
-  // mixins: [ParseReact.Mixin],
+  // mixins: [ReactFireMixin],
   getInitialState: function(){
     return {
       videos: [],
@@ -30,25 +17,18 @@ var App = React.createClass({
       pageSize: 1
     };
   },
-  // observe: function(){
-  //   return {
-  //     videos: (new Parse.Query('video')).ascending('createdAt')
-  //   }
-  // },
-  // handleActiveChange: function(doc, index){
-  //   console.log("handling active change");
-  // },
+  componentWillMount: function(){
+    var ref = new Firebase("https://confreaks.firebaseio.com/videos");
+    // this.bindAsArray(ref, "videos");
 
-  componentDidMount: function() {
-    // use bindToState for live updating,
-    // or fetch for single loading,
-    // or syncState for two-way binding
-    base.syncState("/videos", {
-      context: this,
-      state: 'videos',
-      asArray: true,
-    });
-    // this.loadSampleVideos()
+    ref.on("child_added", function(dataSnapshot) {
+      console.dir(dataSnapshot);
+      this.state.videos.push(dataSnapshot.val());
+      this.setState({
+        videos: this.state.videos
+      });
+    }.bind(this));
+    // this.unbind("videos")
   },
   loadSampleVideos: function(){
     console.log("loading samples");
