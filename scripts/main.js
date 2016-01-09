@@ -14,12 +14,15 @@ var App = React.createClass({
   getInitialState: function(){
     return {
       videos: [],
-      pageSize: 1,
+      pageSize: 2,
     };
   },
   componentWillMount: function(){
     var ref = new Firebase("https://confreaks.firebaseio.com/videos");
-    this.firebaseCursor = new Firebase.util.Scroll(ref, 'views');
+    // this.firebaseCursor = new Firebase.util.Scroll(ref, 'views');
+    this.firebaseCursor = new Firebase.util.Paginate(ref, 'views', {
+      pageSize: this.state.pageSize
+    });
 
     this.firebaseCursor.on("child_added", function(dataSnapshot) {
       console.dir(dataSnapshot);
@@ -28,7 +31,25 @@ var App = React.createClass({
         videos: this.state.videos
       });
     }.bind(this));
-    this.firebaseCursor.scroll.next(this.state.pageSize);
+
+    // this.firebaseCursor.on("child_removed", function(dataSnapshot) {
+    //   console.log('child removed');
+    //   console.dir(dataSnapshot.val().id);
+    //   // this.state.videos.push(dataSnapshot.val());
+    //   // this.setState({
+    //   //   videos: this.state.videos
+    //   // });
+    // }.bind(this));
+
+    // this.loadMore();
+    // this.firebaseCursor.page.next();
+    this.nextPage()
+  },
+  nextPage: function(){
+    this.setState({
+      videos: []
+    });
+    this.firebaseCursor.page.next();
   },
   loadMore: function(){
     this.firebaseCursor.scroll.next(this.state.pageSize);
