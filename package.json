@@ -1,5 +1,5 @@
 {
-  "name": "confreaks top videos",
+  "name": "confreaks-top-videos",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -38,6 +38,7 @@
     "react-bootstrap": "^0.28.2",
     "react-catalyst": "0.3.0",
     "react-dom": "0.14.0",
+    "react-github-fork-ribbon": "^0.4.2",
     "react-loader": "^2.0.0",
     "react-mixin": "3.0.0",
     "react-router": "1.0.0-rc3",

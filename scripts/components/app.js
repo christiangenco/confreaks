@@ -5,10 +5,11 @@ var fbutil = require('firebase-util');
 // var h = require('../helpers');
 var $ = require('jquery');
 var Mousetrap = require('mousetrap')
-var Loader = require('react-loader');
 // http://getbootstrap.com/components/#pagination
 var Pagination = require('react-bootstrap').Pagination
 
+var Loader = require('react-loader');
+var GitHubForkRibbon = require('react-github-fork-ribbon');
 import Video from './video'
 
 var App = React.createClass({
@@ -103,6 +104,13 @@ var App = React.createClass({
           })}
           {this.paginator()}
         </Loader>
+        <GitHubForkRibbon
+          href="https://github.com/christiangenco/confreaks"
+          target="_blank"
+          position="right-bottom"
+          color="black">
+          Fork me on GitHub
+        </GitHubForkRibbon>
       </div>
     )
   }
