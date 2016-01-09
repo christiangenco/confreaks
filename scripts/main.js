@@ -9,12 +9,16 @@ var h = require('./helpers');
 var moment = require('moment');
 var $ = require('jquery');
 
+var Pagination = require('react-bootstrap').Pagination
+
 var App = React.createClass({
   // mixins: [ReactFireMixin],
   getInitialState: function(){
     return {
       videos: [],
       pageSize: 2,
+      page: 1,
+      pageCount: 0
     };
   },
   componentWillMount: function(){
@@ -32,18 +36,28 @@ var App = React.createClass({
       });
     }.bind(this));
 
-    // this.firebaseCursor.on("child_removed", function(dataSnapshot) {
-    //   console.log('child removed');
-    //   console.dir(dataSnapshot.val().id);
-    //   // this.state.videos.push(dataSnapshot.val());
-    //   // this.setState({
-    //   //   videos: this.state.videos
-    //   // });
-    // }.bind(this));
+    // NOTE: this function is misspelled. Change to getCountByDownloadingAllKeys
+    // when https://github.com/firebase/firebase-util/pull/82 is merged
+    this.firebaseCursor.page.getCountByDowloadingAllKeys(function(count){
+      console.info("downloaded total count = ", count)
+      this.gotoPage(this.state.page);
+    }.bind(this))
 
-    // this.loadMore();
-    // this.firebaseCursor.page.next();
-    this.nextPage()
+    this.firebaseCursor.page.onPageCount(function(currentPageCount, couldHaveMore) {
+      this.setState({
+        pageCount: currentPageCount
+      });
+    }.bind(this));
+
+    this.firebaseCursor.page.onPageChange(function(pageNumber){
+      // ignore initial loading
+      if(pageNumber !== 0){
+        console.info("on page " + pageNumber);
+        this.setState({
+          page: pageNumber
+        });
+      }
+    }.bind(this));
   },
   nextPage: function(){
     this.setState({
@@ -51,8 +65,17 @@ var App = React.createClass({
     });
     this.firebaseCursor.page.next();
   },
-  loadMore: function(){
-    this.firebaseCursor.scroll.next(this.state.pageSize);
+  prevPage: function(){
+    this.setState({
+      videos: []
+    });
+    this.firebaseCursor.page.prev();
+  },
+  gotoPage: function(pageNumber){
+    this.setState({
+      videos: []
+    });
+    this.firebaseCursor.page.setPage(pageNumber);
   },
   loadSampleVideos: function(){
     console.log("loading samples");
@@ -60,12 +83,16 @@ var App = React.createClass({
       videos: require('./sample-videos')
     })
   },
+  handlePaginationSelect: function(event, selectedEvent){
+    this.gotoPage(selectedEvent.eventKey);
+  },
   render: function(){
     return (
       <div className="">
         {this.state.videos.map(function(video){
           return <Video key={video.id} {...video} />
         })}
+        <Pagination onSelect={this.handlePaginationSelect} activePage={this.state.page} items={this.state.pageCount} maxButtons={10} first={true} last={true} next={true} prev={true} />
       </div>
     )
   }

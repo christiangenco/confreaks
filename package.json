@@ -33,6 +33,7 @@
     "re-base": "1.2.1",
     "react": "0.14.0",
     "react-addons-css-transition-group": "0.14.0",
+    "react-bootstrap": "^0.28.2",
     "react-catalyst": "0.3.0",
     "react-dom": "0.14.0",
     "react-mixin": "3.0.0",
