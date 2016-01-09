@@ -3,6 +3,7 @@
 * store state (current page) in the URL with router
 * inline video player popup in modal: https://react-bootstrap.github.io/components.html#modals
 * truncate descriptions
+* figure out how to have just one index.html file
 
 ---
 

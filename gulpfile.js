@@ -71,7 +71,7 @@ function buildScript(file, watch) {
     transform:  [babelify.configure({stage : 0 })]
   };
 
-  // watchify() if watch requested, otherwise run browserify() once 
+  // watchify() if watch requested, otherwise run browserify() once
   var bundler = watch ? watchify(browserify(props)) : browserify(props);
 
   function rebundle() {
@@ -81,10 +81,10 @@ function buildScript(file, watch) {
       .pipe(source(file))
       .pipe(gulp.dest('./build/'))
       // If you also want to uglify it
-      // .pipe(buffer())
-      // .pipe(uglify())
-      // .pipe(rename('app.min.js'))
-      // .pipe(gulp.dest('./build'))
+      .pipe(buffer())
+      .pipe(uglify())
+      .pipe(rename('app.min.js'))
+      .pipe(gulp.dest('./build'))
       .pipe(reload({stream:true}))
   }
 
